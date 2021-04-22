@@ -11,40 +11,66 @@ class FollowToggle {
     render(){
         if(this.followState === "unfollow") {
             this.$el.html("follow!");
-        } else {
+        } else 
+        if (this.followState === "follow") {
             this.$el.html("unfollow!");
+        } else {
+            this.$el.html("?");
         }
     }
 
     handleClick(event){ 
-        debugger
+        
+        // event.preventDefault();
+
+    
+        const followToggle = this;
+    
         event.preventDefault();
-        if(this.followState === "unfollow") {
-            debugger 
-            $.ajax({
-                method: "POST",
-                url:`/users/#{userId}/follow`,
-                dataType: "json",
-            }).then(() => {
-                debugger 
-                this.followState = "follow";
-                this.render();
-            })
-        } else {
-            if(this.followState === "follow") {
-                debugger 
-                $.ajax({
-                    method: "DELETE",
-                    url:`/users/#{userId}/follow`,
-                    dataType: "json",
-                }).then(() => {
-                    debugger 
-                    this.followState = "unfollow";
-                    this.render();
-                })
-            }
-       
+    
+        if (this.followState === 'followed') {
+            this.followState = 'unfollowing';
+            this.render();
+            APIUtil.unfollowUser(this.userId).then(() => {
+            followToggle.followState = 'unfollowed';
+            followToggle.render();
+            });
+        } else if (this.followState === 'unfollowed') {
+            this.followState = 'following';
+            this.render();
+            APIUtil.followUser(this.userId).then(() => {
+            followToggle.followState = 'followed';
+            followToggle.render();
+            });
+        
         }
+
+        // if(this.followState === "unfollow") {
+        //      this.render();
+        //     $.ajax({
+        //         method: "POST",
+        //         url:`/users/${userId}/follow`,
+        //         dataType: "json",
+        //     }).then(() => {
+                 
+        //         this.followState = "follow";
+        //         this.render();
+        //     })
+        // } else {
+        //     if(this.followState === "follow") {
+        //         this.render();
+        //         $.ajax({
+        //             method: "DELETE",
+        //             url:`/users/${userId}/follow`,
+        //             dataType: "json",
+        //         }).then(() => {
+                     
+        //             this.followState = "unfollow";
+        //             this.render();
+        //         })
+        //     }
+       
+        // }
     }
 }
 
